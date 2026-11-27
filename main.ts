@@ -1,4 +1,6 @@
 import { cpSync, mkdirSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-game.ts';
 
 /* Gobble Dash entrypoint: copy game/ and screenshots/ into the output
@@ -8,8 +10,9 @@ import { buildDossier } from './vendor/makefun-game.ts';
 
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 mkdirSync(outDir, { recursive: true });
-cpSync('game', `${outDir}/game`, { recursive: true });
-cpSync('screenshots', `${outDir}/screenshots`, { recursive: true });
+const rootDir = dirname(fileURLToPath(import.meta.url));
+cpSync(join(rootDir, 'game'), `${outDir}/game`, { recursive: true });
+cpSync(join(rootDir, 'screenshots'), `${outDir}/screenshots`, { recursive: true });
 writeFileSync(
   `${outDir}/dossier.json`,
   buildDossier(outDir, {
